@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { UserButton } from "@/components/common/user-button";
 
 import { useGetWorkspaces } from "@/features/workspaces/api/use-get-workspaces";
-import { useCreateWorkSpaceModal } from "@/features/store/use-create-workspace-modal";
+import { useCreateWorkSpaceModal } from "@/features/workspaces/store/use-create-workspace-modal";
 
 const Home = () => {
   const [open, setOpen] = useCreateWorkSpaceModal();
@@ -25,7 +25,6 @@ const Home = () => {
 
   return (
     <div>
-      Hello <span>World</span>
       <UserButton />
     </div>
   );
