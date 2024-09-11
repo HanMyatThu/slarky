@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useCreateWorkSpaceModal } from "../store/use-create-workspace-modal";
 import { useCreateWorkSpaces } from "../api/use-create-workspaces";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const WorkSpaceModal = () => {
   const [open, setOpen] = useCreateWorkSpaceModal();
@@ -31,8 +32,9 @@ export const WorkSpaceModal = () => {
       { name },
       {
         onSuccess: (data) => {
-          console.log(data, "data");
+          toast.success("Workspace created!");
           router.push(`/workspace/${data?._id}`);
+          handleClose();
         },
       }
     );
