@@ -55,13 +55,13 @@ export const WorkSpaceSwitcher = () => {
         {filteredWorkspaces?.map((workspace) => (
           <DropdownMenuItem
             key={workspace._id}
-            className="cursor-pionter flex-row justify-start items-center capitalize group"
+            className="cursor-pionter capitalize group overflow-hidden"
             onClick={() => router.push(`/workspace/${workspace?._id}`)}
           >
-            <div className="size-9 relative overflow-hidden bg-[#616061]/90 group-hover:bg-[#616061] transition text-white font-semibold text-lg rounded-md flex items-center justify-center mr-2">
+            <div className="shrink-0 size-9 relative overflow-hidden bg-[#616061]/90 group-hover:bg-[#616061] transition text-white font-semibold text-lg rounded-md flex items-center justify-center mr-2">
               {workspace?.name.charAt(0).toUpperCase()}
             </div>
-            <span className="text-sm ml-2">{workspace.name}</span>
+            <p className="truncate">{workspace.name}</p>
           </DropdownMenuItem>
         ))}
         <Separator />
@@ -72,7 +72,7 @@ export const WorkSpaceSwitcher = () => {
           <div className="size-9 relative overflow-hidden bg-[#F2F2F2] group-hover:bg-black/20 transition text-slate-800 font-semibold text-lg rounded-md flex items-center justify-center mr-2">
             <Plus />
           </div>
-          <span className="text-sm ml-2">Create a new workspace</span>
+          Create a new workspace
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

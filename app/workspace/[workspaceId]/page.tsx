@@ -5,8 +5,7 @@ import { useWorkSpaceId } from "@/hooks/use-workspace-id";
 
 const WorkSpaceIdPage = () => {
   const workspaceId = useWorkSpaceId();
-  const workSpace = useGetWorkSpaceById(workspaceId);
-  console.log(workSpace, " workspace");
+  const { data, isLoading } = useGetWorkSpaceById(workspaceId);
 
   return (
     <div>
