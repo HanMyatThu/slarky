@@ -1,3 +1,4 @@
+import { ToolTipHint } from "@/components/common/tooltip-hint";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Doc } from "@/convex/_generated/dataModel";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ListFilter, SquarePen } from "lucide-react";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;
@@ -25,7 +26,7 @@ export const WorkSpaceHeader = ({
         <DropdownMenuTrigger asChild>
           <Button
             variant="transparent"
-            className="font-semibold text-lg w-auto p-1.5 overflow-hidden"
+            className="font-semibold text-[16px] w-auto p-1.5 overflow-hidden"
             size="sm"
           >
             <span className="truncate">{workspace.name}</span>
@@ -62,6 +63,18 @@ export const WorkSpaceHeader = ({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+      <div className="flex items-center gap-0.5">
+        <ToolTipHint label="Filter Conversation" side="bottom">
+          <Button variant="transparent" size="iconSm">
+            <ListFilter className="size-4" />
+          </Button>
+        </ToolTipHint>
+        <ToolTipHint label="New Message" side="bottom">
+          <Button variant="transparent" size="iconSm">
+            <SquarePen className="size-4" />
+          </Button>
+        </ToolTipHint>
+      </div>
     </div>
   );
 };
