@@ -1,6 +1,7 @@
 import { Dispatch, useState } from "react";
 import { TrashIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -8,14 +9,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogClose,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { useUpdateWorkspace } from "@/features/workspaces/api/use-update-workspaces";
-import { useDeleteWorkspace } from "@/features/workspaces/api/use-detele-workspace";
-import { DialogClose, DialogTrigger } from "@radix-ui/react-dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useUpdateWorkspace } from "@/features/workspaces/api/use-update-workspaces";
+import { useDeleteWorkspace } from "@/features/workspaces/api/use-detele-workspace";
+import { useGetWorkSpaceById } from "@/features/workspaces/api/use-get-workspace-id";
 import { useWorkSpaceId } from "@/hooks/use-workspace-id";
-import { useRouter } from "next/navigation";
+import { ConfirmationModal } from "@/components/common/confirmation-modal";
 
 interface PreferenceModalProps {
   open: boolean;
@@ -29,6 +32,7 @@ export const PreferencesModal = ({
   initialValue,
 }: PreferenceModalProps) => {
   const workspaceId = useWorkSpaceId();
+  const { data } = useGetWorkSpaceById(workspaceId);
   const router = useRouter();
 
   const [value, setValue] = useState(initialValue);
@@ -127,14 +131,19 @@ export const PreferencesModal = ({
               </form>
             </DialogContent>
           </Dialog>
-          <button
-            disabled={pendingDelete}
-            onClick={handleDelete}
-            className="flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg border cursor-pointer hover:bg-gray-50 text-rose-600"
+          <ConfirmationModal
+            label="Are you sure to delete this workspace?"
+            onConfirm={handleDelete}
+            confirmText={data?.name!}
           >
-            <TrashIcon className="size-4" />
-            <p className="text-sm font-semibold">Delete Workspace</p>
-          </button>
+            <button
+              disabled={pendingDelete}
+              className="flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg border cursor-pointer hover:bg-gray-50 text-rose-600"
+            >
+              <TrashIcon className="size-4" />
+              <p className="text-sm font-semibold">Delete Workspace</p>
+            </button>
+          </ConfirmationModal>
         </div>
       </DialogContent>
     </Dialog>
