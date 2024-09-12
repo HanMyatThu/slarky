@@ -8,6 +8,7 @@ import { WorkSpaceModal } from "@/features/workspaces/components/workspace-modal
 import { Modals } from "@/components/common/modals";
 
 import "./globals.css";
+import { JotaiProvider } from "@/providers/jotai-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,9 +27,11 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <ConvexClientProvider>
-            {children}
-            <Modals />
-            <Toaster />
+            <JotaiProvider>
+              {children}
+              <Modals />
+              <Toaster />
+            </JotaiProvider>
           </ConvexClientProvider>
         </body>
       </html>
