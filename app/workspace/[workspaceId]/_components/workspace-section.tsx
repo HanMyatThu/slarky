@@ -1,8 +1,9 @@
+import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+import { FaCaretDown, FaCaretRight } from "react-icons/fa";
+
 import { ToolTipHint } from "@/components/common/tooltip-hint";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
-import { FaCaretDown } from "react-icons/fa";
-
 interface WorkspaceSectionProps {
   children: React.ReactNode;
   label: string;
@@ -16,14 +17,20 @@ export const WorkspaceSection = ({
   hint,
   onNew,
 }: WorkspaceSectionProps) => {
+  const [toggle, onToggle] = useState(false);
   return (
     <div className="flex flex-col mt-3 px-2">
       <div className="flex items-center px-3.5 group">
         <Button
           variant="transparent"
           className="p-0.5 text-sm text-[#f9edffcc] shrink-0 size-6"
+          onClick={() => onToggle(!toggle)}
         >
-          <FaCaretDown className="size-4" />
+          {toggle ? (
+            <FaCaretRight className="size-4" />
+          ) : (
+            <FaCaretDown className="size-4" />
+          )}
         </Button>
         <Button
           variant="transparent"
@@ -45,7 +52,7 @@ export const WorkspaceSection = ({
           </ToolTipHint>
         )}
       </div>
-      {children}
+      {toggle && <>{children}</>}
     </div>
   );
 };
