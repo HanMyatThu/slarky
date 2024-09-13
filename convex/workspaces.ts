@@ -56,10 +56,17 @@ export const createWorkSpace = mutation({
       joinCode,
     });
 
+    //create user as a admin
     await ctx.db.insert("members", {
       userId,
       workspaceId: workSpaceId,
       role: "admin",
+    });
+
+    //create defaut channel
+    await ctx.db.insert("channels", {
+      name: "general",
+      workspaceId: workSpaceId,
     });
 
     const workspace = await ctx.db.get(workSpaceId);
