@@ -14,6 +14,8 @@ import { useGetChannels } from "@/features/channels/api/use-get-channel";
 import { SidebarItem } from "./sidebar-item";
 import { WorkSpaceHeader } from "./workspace-header";
 import { WorkspaceSection } from "./workspace-section";
+import { useGetMembers } from "@/features/members/api/use-get-members";
+import { UserItem } from "./user-item";
 
 export const WorkSpaceSidebar = () => {
   const workspaceId = useWorkSpaceId();
@@ -26,8 +28,11 @@ export const WorkSpaceSidebar = () => {
   const { data: channels, isLoading: channelsLoading } = useGetChannels({
     workspaceId,
   });
+  const { data: members, isLoading: membersLoading } = useGetMembers({
+    workspaceId,
+  });
 
-  if (workspaceLoading || memberLoading || channelsLoading) {
+  if (workspaceLoading || memberLoading || channelsLoading || membersLoading) {
     return (
       <div className="flex flex-col bg-[#5E2C5F] h-full items-center justify-center">
         <Loader className="size-6 animate-spin text-white" />
@@ -61,6 +66,21 @@ export const WorkSpaceSidebar = () => {
             key={item._id}
             icon={HashIcon}
             label={item.name}
+            id={item._id}
+          />
+        ))}
+      </WorkspaceSection>
+
+      <WorkspaceSection
+        label="Direct Messages"
+        hint="New direct message"
+        onNew={() => {}}
+      >
+        {members?.map((item) => (
+          <UserItem
+            key={item._id}
+            label={item.user.name}
+            image={item.user.image}
             id={item._id}
           />
         ))}
