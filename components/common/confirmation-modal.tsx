@@ -30,12 +30,16 @@ export const ConfirmationModal = ({
   description,
   confirmText = "confirm",
 }: ConfirmationModalProps) => {
+  const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const closeRef = useRef<ElementRef<"button">>(null);
 
-  const handleClose = () => {
-    setConfirm("");
+  const handleClose = (open: boolean) => {
+    if (!open) {
+      setConfirm("");
+    }
+    setOpen(open);
   };
 
   const isCorrectInput = confirm === confirmText;
@@ -56,7 +60,7 @@ export const ConfirmationModal = ({
   };
 
   return (
-    <Dialog onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
