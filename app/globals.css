@@ -64,3 +64,51 @@ body,
     --chart-5: 340 75% 55%;
   }
 }
+
+
+.ql-toolbar {
+  border: none !important;
+  background-color: #f8f8f8 !important;
+}
+
+.ql-toolbar .ql-formats:not(:last-child) {
+  border-right: 1px solid #dcdcdc !important;
+  padding-right: 12px !important
+}
+
+.ql-container {
+  font-family: "Lato", sans-serif !imporant;
+  border: none !imporant;
+  height: unset !imporant;
+}
+
+.ql-editor {
+  line-height: 22px !imporant;
+  padding: 8px 12px !imporant;
+  color: #1d1c1d !imporant;
+  font-weight: 400 !imporant;
+  font-family: "Lato", sans-serif !imporant;  
+  font-size: 14px !imporant;
+}
+
+.ql-editor a {
+  color: #1264a3 !imporant;
+}
+
+.ql-editor a:hover {
+  text-decoration: underline !imporant
+}
+
+.ql-renderer {
+  padding: 0 !imporant;
+}
+
+.ql-editor:before {
+  left: 12px !imporant;
+  color: #8d8d8d !imporant;
+  font-style: normal !imporant;
+  font-size: 14px !imporant;
+  font-family: "Lato", sans-serif !imporant;  
+  font-weight: 400 !imporant;
+  @apply truncate;
+}
