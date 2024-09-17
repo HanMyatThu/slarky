@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +17,8 @@ import { useWorkSpaceId } from "@/hooks/use-workspace-id";
 
 export const CreateChannelModal = () => {
   const workspaceId = useWorkSpaceId();
+  const router = useRouter();
+
   const [open, setOpen] = useCreateChannelModal();
   const [name, setName] = useState("");
 
@@ -40,7 +44,12 @@ export const CreateChannelModal = () => {
       },
       {
         onSuccess: (channel) => {
+          toast.success("Channel created");
+          router.push(`/workspace/${workspaceId}/channel/${channel?._id}`);
           handleClose();
+        },
+        onError: () => {
+          toast.error("Failed to create channel");
         },
       }
     );
