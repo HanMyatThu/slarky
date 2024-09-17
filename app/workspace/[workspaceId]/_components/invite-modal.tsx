@@ -1,4 +1,6 @@
 import { Dispatch } from "react";
+import { CopyIcon, RefreshCcw, TrashIcon } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -6,11 +8,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogClose,
 } from "@/components/ui/dialog";
-import { useWorkSpaceId } from "@/hooks/use-workspace-id";
 import { Button } from "@/components/ui/button";
-import { CopyIcon } from "lucide-react";
-import { toast } from "sonner";
+import { ConfirmationModal } from "@/components/common/confirmation-modal";
+import { useWorkSpaceId } from "@/hooks/use-workspace-id";
+import { useNewJoinCode } from "@/features/workspaces/api/use-new-joincode";
 
 interface InviteModalProps {
   open: boolean;
@@ -27,6 +30,8 @@ export const InviteModal = ({
 }: InviteModalProps) => {
   const workspaceId = useWorkSpaceId();
 
+  const { mutate, isPending } = useNewJoinCode();
+
   const handleCopy = () => {
     const inviteLink = `${window.location.origin}/join/${workspaceId}`;
     navigator.clipboard
@@ -34,10 +39,24 @@ export const InviteModal = ({
       .then(() => toast.success("Invite link is copied to clipboard"));
   };
 
+  const handleNewCode = () => {
+    mutate(
+      { workspaceId },
+      {
+        onSuccess: () => {
+          toast.success("Invite code regenerated");
+        },
+        onError: () => {
+          toast.error("Failed to regenerate invite code");
+        },
+      }
+    );
+  };
+
   return (
     <Dialog open={open} onOpenChange={(value) => setOpen(value)}>
-      <DialogContent className="p-0 bg-gray-50 overflow-hidden">
-        <DialogHeader className="p-4 border-b bg-white">
+      <DialogContent>
+        <DialogHeader>
           <DialogTitle>Invite people to {name}</DialogTitle>
           <DialogDescription>
             Use the code below to invite people to your workspace
@@ -47,10 +66,29 @@ export const InviteModal = ({
           <p className="text-4xl font-bold tracking-widest uppercase ">
             {joinCode}
           </p>
-          <Button variant="ghost" size="sm" onClick={handleCopy}>
+          <Button variant="secondary" size="sm" onClick={handleCopy}>
             Copy Link
             <CopyIcon className="size-4 ml-2" />
           </Button>
+        </div>
+        <div className="flex w-full items-center justify-between">
+          <ConfirmationModal
+            label="Are you sure to regenerate a channel joincode?"
+            description="This will deactivate the current invite code and generate a new one."
+            onConfirm={handleNewCode}
+            confirmText={"join-code"}
+          >
+            <Button disabled={isPending} variant="slacky" className="group">
+              New Code
+              <RefreshCcw className="size-4 ml-2 group-hover:animate-spin transition-all" />
+            </Button>
+          </ConfirmationModal>
+
+          <DialogClose asChild>
+            <Button disabled={isPending} variant="default">
+              Close
+            </Button>
+          </DialogClose>
         </div>
       </DialogContent>
     </Dialog>

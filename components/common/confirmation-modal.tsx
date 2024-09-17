@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogClose,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ interface ConfirmationModalProps {
   children: React.ReactNode;
   label: string;
   onConfirm: () => void;
+  description?: string;
   confirmText: string;
 }
 
@@ -25,11 +27,16 @@ export const ConfirmationModal = ({
   children,
   label,
   onConfirm,
+  description,
   confirmText = "confirm",
 }: ConfirmationModalProps) => {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const closeRef = useRef<ElementRef<"button">>(null);
+
+  const handleClose = () => {
+    setConfirm("");
+  };
 
   const isCorrectInput = confirm === confirmText;
 
@@ -49,11 +56,12 @@ export const ConfirmationModal = ({
   };
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={handleClose}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{label}</DialogTitle>
+          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         <form onSubmit={handleConfirm} className="space-y-2 mt-2">
           <Label className="text-xs text-muted-foreground">
