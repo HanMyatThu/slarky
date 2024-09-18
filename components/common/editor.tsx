@@ -3,7 +3,13 @@ import { Delta, Op } from "quill/core";
 import { PiTextAa } from "react-icons/pi";
 import { MdSend } from "react-icons/md";
 import { ImageIcon, Smile } from "lucide-react";
-import { MutableRefObject, useEffect, useLayoutEffect, useRef } from "react";
+import {
+  MutableRefObject,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { Button } from "@/components/ui/button";
 import { ToolTipHint } from "./tooltip-hint";
@@ -34,11 +40,14 @@ const Editor = ({
   onCancel,
   placeHOlder = "Write something...",
 }: EditorProps) => {
+  const [text, setText] = useState("");
+  const [isToolbarVisible, setIsToolbarVisiable] = useState(true);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const submitRef = useRef(onSubmit);
   const placeHolderRef = useRef(placeHOlder);
   const quillRef = useRef<Quill | null>(null);
-  const defaultValueRef = useRef(defaultValue);
+  const defaultValueRef = useRef<Delta | Op[] | undefined>(defaultValue);
   const disabledRef = useRef(disabled);
 
   useLayoutEffect(() => {
@@ -59,33 +68,93 @@ const Editor = ({
     const options: QuillOptions = {
       theme: "snow",
       placeholder: placeHolderRef.current,
+      modules: {
+        toolbar: [
+          ["bold", "italic", "strike"],
+          ["link"],
+          [{ list: "ordered" }, { list: "bullet" }],
+        ],
+        keyboard: {
+          bindings: {
+            enter: {
+              key: "Enter",
+              handler: () => {
+                return;
+              },
+            },
+            shift_enter: {
+              key: "Enter",
+              shiftKey: true,
+              handler: () => {
+                quill.insertText(quill.getSelection()?.index || 0, "\n");
+              },
+            },
+          },
+        },
+      },
     };
-    new Quill(editorContainer, options);
+    const quill = new Quill(editorContainer, options);
+    quillRef.current = quill;
+    quillRef.current.focus();
+
+    if (innerRef) {
+      innerRef.current = quill;
+    }
+
+    quill.setContents(defaultValueRef.current!);
+    setText(quill.getText());
+
+    quill.on(Quill.events.TEXT_CHANGE, () => {
+      setText(quill.getText());
+    });
 
     return () => {
+      quill.off(Quill.events.TEXT_CHANGE);
       if (container) {
         container.innerHTML = "";
       }
+
+      if (quillRef.current) {
+        quillRef.current = null;
+      }
+
+      if (innerRef) {
+        innerRef.current = null;
+      }
     };
-  }, []);
+  }, [innerRef]);
+
+  const toggleToolbar = () => {
+    setIsToolbarVisiable((current) => !current);
+    const toolbarElement = containerRef.current?.querySelector(".ql-toolbar");
+
+    if (toolbarElement) {
+      toolbarElement.classList.toggle("hidden");
+    }
+  };
+
+  const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:border-blue-300 focus-within:shadow-md transition bg-white">
         <div ref={containerRef} className="h-full ql-custom" />
         <div className="flex px-2 pb-2 z-[5]">
-          <ToolTipHint label="Hide formatting">
+          <ToolTipHint
+            label={isToolbarVisible ? "Hide formatting" : "Show formatting"}
+          >
             <Button
-              disabled={false}
+              disabled={disabled}
               size="iconSm"
               variant="ghost"
-              onClick={() => {}}
+              onClick={toggleToolbar}
             >
               <PiTextAa className="size-4" />
             </Button>
           </ToolTipHint>
           <ToolTipHint label="Emoji">
             <Button
-              disabled={false}
+              disabled={disabled}
               size="iconSm"
               variant="ghost"
               onClick={() => {}}
@@ -96,7 +165,7 @@ const Editor = ({
           {variant === "create" && (
             <ToolTipHint label="Image">
               <Button
-                disabled={false}
+                disabled={disabled}
                 size="iconSm"
                 variant="ghost"
                 onClick={() => {}}
@@ -111,7 +180,7 @@ const Editor = ({
                 variant="outline"
                 size="sm"
                 onClick={() => {}}
-                disabled={false}
+                disabled={disabled}
               >
                 Cancel
               </Button>
@@ -119,7 +188,7 @@ const Editor = ({
                 variant="slacky"
                 size="sm"
                 onClick={() => {}}
-                disabled={false}
+                disabled={disabled}
               >
                 Save
               </Button>
@@ -127,7 +196,7 @@ const Editor = ({
           )}
           {variant === "create" && (
             <Button
-              disabled={false}
+              disabled={isEmpty || disabled}
               size="iconSm"
               variant="slacky"
               className="ml-auto"
