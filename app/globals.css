@@ -65,7 +65,6 @@ body,
   }
 }
 
-
 .ql-toolbar {
   border: none !important;
   background-color: #f8f8f8 !important;
@@ -76,39 +75,40 @@ body,
   padding-right: 12px !important
 }
 
+
 .ql-container {
-  font-family: "Lato", sans-serif !imporant;
-  border: none !imporant;
-  height: unset !imporant;
+  font-family: "Lato", sans-serif !important;
+  border: none !important;
+  height: unset !important;
 }
 
 .ql-editor {
-  line-height: 22px !imporant;
-  padding: 8px 12px !imporant;
-  color: #1d1c1d !imporant;
-  font-weight: 400 !imporant;
-  font-family: "Lato", sans-serif !imporant;  
-  font-size: 14px !imporant;
+  line-height: 22px !important;
+  padding: 8px 12px !important;
+  color: #1d1c1d !important;
+  font-weight: 400 !important;
+  font-family: "Lato", sans-serif !important;  
+  font-size: 14px !important;
 }
 
 .ql-editor a {
-  color: #1264a3 !imporant;
+  color: #1264a3 !important;
 }
 
 .ql-editor a:hover {
-  text-decoration: underline !imporant
+  text-decoration: underline !important
 }
 
 .ql-renderer {
-  padding: 0 !imporant;
+  padding: 0 !important;
 }
 
 .ql-editor:before {
-  left: 12px !imporant;
-  color: #8d8d8d !imporant;
-  font-style: normal !imporant;
-  font-size: 14px !imporant;
-  font-family: "Lato", sans-serif !imporant;  
-  font-weight: 400 !imporant;
+  left: 12px !important;
+  color: #8d8d8d !important;
+  font-style: normal !important;
+  font-size: 14px !important;
+  font-family: "Lato", sans-serif !important;  
+  font-weight: 400 !important;
   @apply truncate;
 }
