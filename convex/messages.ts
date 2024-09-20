@@ -23,6 +23,7 @@ export const createMessage = mutation({
     image: v.optional(v.id("_storage")),
     workspaceId: v.id("workspaces"),
     channelId: v.optional(v.id("channels")),
+    conversationId: v.optional(v.id("conversations")),
     parentMessageId: v.optional(v.id("messages")),
   },
   handler: async (ctx, args) => {
@@ -39,6 +40,18 @@ export const createMessage = mutation({
     }
 
     //handle conversationId
+    let _conversation_id = args.conversationId;
+
+    //only possible if we are replying in a thread in 1:1 conversation
+    if (!args.conversationId && !args.channelId && args.parentMessageId) {
+      const parentMessage = await ctx.db.get(args.parentMessageId);
+
+      if (!parentMessage) {
+        throw new Error("Parent message not found");
+      }
+
+      _conversation_id = parentMessage.conversationId;
+    }
 
     const messageId = await ctx.db.insert("messages", {
       memberId: member._id,
@@ -47,6 +60,7 @@ export const createMessage = mutation({
       channelId: args.channelId,
       workspaceId: args.workspaceId,
       parentMessageId: args.parentMessageId,
+      conversationId: _conversation_id,
       updatedAt: Date.now(),
     });
 
