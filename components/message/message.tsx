@@ -10,6 +10,8 @@ import { useUpdateMessage } from "@/features/messages/api/use-update-message";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
+import { useToggleReaction } from "@/features/reactions/api/use-toggle-reaction";
+import { Reactions } from "./reactions";
 
 const Renderer = dynamic(() => import("@/components/message/renderer"), {
   ssr: false,
@@ -70,8 +72,9 @@ export const Message = ({
     useUpdateMessage();
   const { mutate: removeMessage, isPending: isRemovingMessage } =
     useRemoveMessage();
+  const { mutate: toggleReaction, isPending: isReacting } = useToggleReaction();
 
-  const isPending = isUpdatingMessage || isRemovingMessage;
+  const isPending = isUpdatingMessage || isRemovingMessage || isReacting;
 
   const handleUpdate = ({ body }: { body: string }) => {
     updateMessage(
@@ -105,12 +108,28 @@ export const Message = ({
     );
   };
 
+  const handleReaction = (value: string) => {
+    toggleReaction(
+      {
+        messageId: id,
+        value,
+      },
+      {
+        onError: () => {
+          toast.error("Failed to send reaction");
+        },
+      }
+    );
+  };
+
   if (isCompact) {
     return (
       <div
         className={cn(
           "flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
-          isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]"
+          isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]",
+          isRemovingMessage &&
+            "bg-red-500/50 transform transition-all scale-y-0 origin-bottom duration-200"
         )}
       >
         <div className="flex items-start gap-2">
@@ -139,6 +158,7 @@ export const Message = ({
                     (edited)
                   </span>
                 ) : null}
+                <Reactions data={reactions} onChange={handleReaction} />
               </div>
             </>
           )}
@@ -150,7 +170,7 @@ export const Message = ({
             handleEdit={() => setEditingId(id)}
             handleThread={() => {}}
             handleDelete={handleRemove}
-            handleReaction={() => {}}
+            handleReaction={handleReaction}
             hideThreadButton={hideThreadButton}
           />
         )}
@@ -162,7 +182,9 @@ export const Message = ({
     <div
       className={cn(
         "flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
-        isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]"
+        isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]",
+        isRemovingMessage &&
+          "bg-red-500/50 transform transition-all scale-y-0 origin-bottom duration-200"
       )}
     >
       <div className="flex items-start gap-2">
@@ -205,6 +227,7 @@ export const Message = ({
             {updatedAt && (
               <span className="text-xs text-muted-foreground">(edited)</span>
             )}
+            <Reactions data={reactions} onChange={handleReaction} />
           </div>
         )}
       </div>
@@ -215,7 +238,7 @@ export const Message = ({
           handleEdit={() => setEditingId(id)}
           handleThread={() => {}}
           handleDelete={handleRemove}
-          handleReaction={() => {}}
+          handleReaction={handleReaction}
           hideThreadButton={hideThreadButton}
         />
       )}
