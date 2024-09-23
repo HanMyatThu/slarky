@@ -69,7 +69,7 @@ export const Message = ({
   threadTimestamp,
   hideThreadButton,
 }: MessageProps) => {
-  const { onOpenMessage, onClose, parentMessageId } = usePanel();
+  const { onOpenMessage } = usePanel();
 
   const { mutate: updateMessage, isPending: isUpdatingMessage } =
     useUpdateMessage();
@@ -101,10 +101,6 @@ export const Message = ({
       {
         onSuccess: () => {
           toast.success("Message deleted");
-
-          if (parentMessageId === id) {
-            onClose();
-          }
         },
         onError: () => {
           toast.error("Failed to delete message");
