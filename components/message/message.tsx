@@ -72,7 +72,7 @@ export const Message = ({
   threadName,
   hideThreadButton,
 }: MessageProps) => {
-  const { onOpenMessage } = usePanel();
+  const { onOpenMessage, onOpenProfile } = usePanel();
 
   const { mutate: updateMessage, isPending: isUpdatingMessage } =
     useUpdateMessage();
@@ -199,7 +199,7 @@ export const Message = ({
       )}
     >
       <div className="flex items-start gap-2">
-        <button>
+        <button onClick={() => onOpenProfile(memberId)}>
           <Avatar className="rounded-md">
             <AvatarImage className="rounded-md" src={authorImage} />
             <AvatarFallback className="bg-sky-400 text-white text-xs">
@@ -221,7 +221,7 @@ export const Message = ({
           <div className="flex flex-col w-full overflow-hidden">
             <div className="text-sm">
               <button
-                onClick={() => {}}
+                onClick={() => onOpenProfile(memberId)}
                 className="font-bold text-primary hover:underline"
               >
                 {authorName}
