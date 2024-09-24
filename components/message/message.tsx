@@ -1,9 +1,10 @@
 import dynamic from "next/dynamic";
 import { format, isToday, isYesterday } from "date-fns";
 
+import { usePanel } from "@/hooks/use-panel";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { ToolTipHint } from "@/components/common/tooltip-hint";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Thumbnail } from "./thumbnail";
 import { Toolbar } from "./toolbar";
 import { useUpdateMessage } from "@/features/messages/api/use-update-message";
@@ -12,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
 import { useToggleReaction } from "@/features/reactions/api/use-toggle-reaction";
 import { Reactions } from "./reactions";
-import { usePanel } from "@/hooks/use-panel";
+import { ThreadBar } from "./thread-bar";
 
 const Renderer = dynamic(() => import("@/components/message/renderer"), {
   ssr: false,
@@ -44,6 +45,7 @@ interface MessageProps {
   threadCount?: number;
   threadImage?: string;
   threadTimestamp?: number;
+  threadName?: string;
 }
 
 const formatFullTime = (date: Date) => {
@@ -67,6 +69,7 @@ export const Message = ({
   threadCount,
   threadImage,
   threadTimestamp,
+  threadName,
   hideThreadButton,
 }: MessageProps) => {
   const { onOpenMessage } = usePanel();
@@ -160,6 +163,13 @@ export const Message = ({
                   </span>
                 ) : null}
                 <Reactions data={reactions} onChange={handleReaction} />
+                <ThreadBar
+                  onClick={() => onOpenMessage(id)}
+                  count={threadCount}
+                  image={threadImage}
+                  name={threadName}
+                  timestamp={threadTimestamp}
+                />
               </div>
             </>
           )}
@@ -229,6 +239,13 @@ export const Message = ({
               <span className="text-xs text-muted-foreground">(edited)</span>
             )}
             <Reactions data={reactions} onChange={handleReaction} />
+            <ThreadBar
+              onClick={() => onOpenMessage(id)}
+              count={threadCount}
+              image={threadImage}
+              name={threadName}
+              timestamp={threadTimestamp}
+            />
           </div>
         )}
       </div>
