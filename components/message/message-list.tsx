@@ -8,6 +8,7 @@ import { Message } from "./message";
 import { ChannelHero } from "./channel-hero";
 import { useWorkSpaceId } from "@/hooks/use-workspace-id";
 import { useCurentMemberShip } from "@/features/members/api/use-current-membership";
+import { ConversationHero } from "./member-hero";
 
 const TIME_THRESHOLD = 5;
 interface MessageListProps {
@@ -136,6 +137,9 @@ export const MessageList = ({
       )}
       {variant === "channel" && channelName && channelCreationTime && (
         <ChannelHero name={channelName} creationTime={channelCreationTime} />
+      )}
+      {variant === "conversation" && memberName && memberImage && (
+        <ConversationHero name={memberName} image={memberImage} />
       )}
     </div>
   );
