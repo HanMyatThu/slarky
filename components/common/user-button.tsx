@@ -20,9 +20,10 @@ export const UserButton = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
-      toast.success("Sign out");
       router.replace("/auth");
+      await signOut();
+      router.replace("/auth");
+      toast.success("Sign out");
     } catch {
       toast.error("Unabled to sign out");
     }

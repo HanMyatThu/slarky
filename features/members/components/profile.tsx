@@ -1,12 +1,32 @@
+import Link from "next/link";
 import { Id } from "@/convex/_generated/dataModel";
-import { useGetMember } from "@/features/members/api/use-get-member";
+import {
+  AlertTriangle,
+  XIcon,
+  Loader,
+  MailIcon,
+  ChevronDownIcon,
+} from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, XIcon, Loader, MailIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
-import { useUpdateMember } from "../api/use-update-member";
-import { useRemoveMember } from "../api/use-remove-member";
+
+import { useWorkSpaceId } from "@/hooks/use-workspace-id";
+import { useGetMember } from "@/features/members/api/use-get-member";
+import { useUpdateMember } from "@/features/members/api/use-update-member";
+import { useRemoveMember } from "@/features/members/api/use-remove-member";
+import { useCurentMemberShip } from "@/features/members/api/use-current-membership";
+import { ConfirmationModal } from "@/components/common/confirmation-modal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ProfileProps {
   memberId: Id<"members">;
@@ -14,12 +34,64 @@ interface ProfileProps {
 }
 
 export const Profile = ({ memberId, onClose }: ProfileProps) => {
+  const workspaceId = useWorkSpaceId();
+  const router = useRouter();
+
+  const { data: currentMember, isLoading: currentMemberLoading } =
+    useCurentMemberShip({ workspaceId });
   const { data: member, isLoading: isMemberLoading } = useGetMember({
     id: memberId,
   });
 
-  const {} = useUpdateMember();
-  const {} = useRemoveMember();
+  const { mutate: updateMember, isPending: isUpdatingMember } =
+    useUpdateMember();
+  const { mutate: removingMember, isPending: isRemovingMember } =
+    useRemoveMember();
+
+  const onRemove = () => {
+    removingMember(
+      { id: memberId, workspaceId },
+      {
+        onSuccess: () => {
+          toast.success("Member removed");
+          onClose();
+        },
+        onError: () => {
+          toast.error("Failed to remove member");
+        },
+      }
+    );
+  };
+
+  const onLeave = () => {
+    removingMember(
+      { id: memberId, workspaceId },
+      {
+        onSuccess: () => {
+          router.replace("/");
+          toast.success("You left the workspace");
+          onClose();
+        },
+        onError: () => {
+          toast.error("Failed to leave the workspace");
+        },
+      }
+    );
+  };
+
+  const onRoleChange = (role: "admin" | "member") => {
+    updateMember(
+      { id: memberId, role, workspaceId },
+      {
+        onSuccess: () => {
+          toast.success("Role changed");
+        },
+        onError: () => {
+          toast.error("Failed to change role");
+        },
+      }
+    );
+  };
 
   if (!member) {
     return (
@@ -38,7 +110,7 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
     );
   }
 
-  if (isMemberLoading) {
+  if (isMemberLoading || currentMemberLoading) {
     return (
       <div className="h-full flex flex-col">
         <div className="flex justify-between items-center p-4 border-b">
@@ -72,6 +144,51 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
       </div>
       <div className="flex flex-col p-4">
         <p className="text-xl font-bold">{member.user.name}</p>
+        {currentMember?.role === "admin" && currentMember?._id !== memberId ? (
+          <div className="items-center flex gap-2 mt-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button className="w-full">
+                  {member.role} <ChevronDownIcon className="size-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full">
+                <DropdownMenuRadioGroup
+                  value={member.role}
+                  onValueChange={(role) =>
+                    onRoleChange(role as "admin" | "member")
+                  }
+                >
+                  <DropdownMenuRadioItem value="admin">
+                    Admin
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="member">
+                    Member
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <ConfirmationModal
+              label="Confirm your action!"
+              description="Are you sure you want to remove this member from this workspace?"
+              confirmText="remove"
+              onConfirm={onRemove}
+            >
+              <Button className="w-full">Remove</Button>
+            </ConfirmationModal>
+          </div>
+        ) : currentMember?._id === memberId &&
+          currentMember?.role !== "admin" ? (
+          <div className="mt-4">
+            <ConfirmationModal
+              label="Are you sure you want to leave this workspace?"
+              confirmText="leave"
+              onConfirm={onLeave}
+            >
+              <Button>Leave</Button>
+            </ConfirmationModal>
+          </div>
+        ) : null}
       </div>
       <Separator />
       <div className="flex flex-col p-4">
