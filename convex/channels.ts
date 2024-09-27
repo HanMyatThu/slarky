@@ -163,6 +163,17 @@ export const removeChannel = mutation({
       throw new Error("Unauthorized Access");
     }
 
+    //remove messages, reactions and conversations
+    const [messages] = await Promise.all([
+      ctx.db
+        .query("messages")
+        .withIndex("by_channel_id", (q) => q.eq("channelId", args.id))
+        .collect(),
+    ]);
+
+    for (const message of messages) {
+      await ctx.db.delete(message._id);
+    }
     await ctx.db.delete(channel._id);
 
     return args.id;
