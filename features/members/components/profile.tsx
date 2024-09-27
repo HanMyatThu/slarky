@@ -5,6 +5,8 @@ import { AlertTriangle, XIcon, Loader, MailIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { useUpdateMember } from "../api/use-update-member";
+import { useRemoveMember } from "../api/use-remove-member";
 
 interface ProfileProps {
   memberId: Id<"members">;
@@ -15,6 +17,9 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
   const { data: member, isLoading: isMemberLoading } = useGetMember({
     id: memberId,
   });
+
+  const {} = useUpdateMember();
+  const {} = useRemoveMember();
 
   if (!member) {
     return (
