@@ -138,9 +138,9 @@ export const Header = ({ title }: HeaderProps) => {
                       </Button>
                     </DialogClose>
                     <Button
-                      onClick={() => {}}
                       disabled={updatingChannel}
                       variant="default"
+                      type="submit"
                     >
                       Save
                     </Button>
