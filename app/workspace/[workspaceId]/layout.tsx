@@ -34,7 +34,9 @@ const WorkSpaceIdLayout = ({ children }: { children: React.ReactNode }) => {
             <WorkSpaceSidebar />
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel minSize={40}> {children}</ResizablePanel>
+          <ResizablePanel minSize={40} defaultSize={80}>
+            {children}
+          </ResizablePanel>
           {showPanel && (
             <>
               <ResizableHandle withHandle />
