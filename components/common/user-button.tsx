@@ -2,7 +2,6 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { Loader, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -17,17 +16,6 @@ export const UserButton = () => {
   const router = useRouter();
   const { signOut } = useAuthActions();
   const { data, isLoading } = useCurrentUser();
-
-  const handleSignOut = async () => {
-    try {
-      router.replace("/auth");
-      await signOut();
-      router.replace("/auth");
-      toast.success("Sign out");
-    } catch {
-      toast.error("Unabled to sign out");
-    }
-  };
 
   if (isLoading) {
     return <Loader className="size-4 animate-spin text-muted-foreground" />;
@@ -52,7 +40,12 @@ export const UserButton = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" side="right" className="w-60">
-        <DropdownMenuItem className="h-10" onClick={handleSignOut}>
+        <DropdownMenuItem
+          className="h-10"
+          onClick={() => {
+            signOut();
+          }}
+        >
           <LogOut className="size-4 mr-2" /> Logout
         </DropdownMenuItem>
       </DropdownMenuContent>

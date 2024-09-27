@@ -26,6 +26,7 @@ interface SidebarItemProps {
   id: string;
   icon: LucideIcon;
   variant?: VariantProps<typeof sidebarItemVariants>["variant"];
+  disabled?: boolean;
 }
 
 export const SidebarItem = ({
@@ -33,6 +34,7 @@ export const SidebarItem = ({
   id,
   icon: Icon,
   variant,
+  disabled = false,
 }: SidebarItemProps) => {
   const workspaceId = useWorkSpaceId();
 
@@ -43,10 +45,17 @@ export const SidebarItem = ({
       asChild
       className={cn(sidebarItemVariants({ variant }))}
     >
-      <Link href={`/workspace/${workspaceId}/channel/${id}`}>
-        <Icon className="size-4 mr-1 shrink-0" />
-        <span className="text-sm shrink">{label}</span>
-      </Link>
+      {disabled ? (
+        <div className="flex">
+          <Icon className="size-4 mr-1 shrink-0" />
+          <span className="text-sm shrink">{label}</span>
+        </div>
+      ) : (
+        <Link href={`/workspace/${workspaceId}/channel/${id}`}>
+          <Icon className="size-4 mr-1 shrink-0" />
+          <span className="text-sm shrink">{label}</span>
+        </Link>
+      )}
     </Button>
   );
 };

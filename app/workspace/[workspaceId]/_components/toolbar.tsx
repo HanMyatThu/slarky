@@ -1,10 +1,10 @@
 "use client";
 import { Info, Search } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -12,14 +12,12 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 
 import { useGetWorkSpaceById } from "@/features/workspaces/api/use-get-workspace-id";
 import { useWorkSpaceId } from "@/hooks/use-workspace-id";
 import { useGetChannels } from "@/features/channels/api/use-get-channel";
 import { useGetMembers } from "@/features/members/api/use-get-members";
-import Link from "next/link";
 
 export const Toolbar = () => {
   const [open, setOpen] = useState(false);

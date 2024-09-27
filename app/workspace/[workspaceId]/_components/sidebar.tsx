@@ -3,7 +3,6 @@ import { WorkSpaceSwitcher } from "./workspace-switcher";
 import { SidebarButton } from "./sidebar-button";
 import { BellIcon, Home, MessageSquare, MoreHorizontal } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { Label } from "@radix-ui/react-dropdown-menu";
 
 const SideBarMenus = [
   {

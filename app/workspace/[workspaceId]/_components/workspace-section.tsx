@@ -17,7 +17,7 @@ export const WorkspaceSection = ({
   hint,
   onNew,
 }: WorkspaceSectionProps) => {
-  const [toggle, onToggle] = useState(false);
+  const [toggle, onToggle] = useState(true);
   return (
     <div className="flex flex-col mt-3 px-2">
       <div className="flex items-center px-3.5 group">

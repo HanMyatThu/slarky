@@ -4,7 +4,6 @@ import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { Toaster } from "sonner";
 
 import { ConvexClientProvider } from "@/providers/convex-provider";
-import { WorkSpaceModal } from "@/features/workspaces/components/workspace-modal";
 import { Modals } from "@/components/common/modals";
 
 import "./globals.css";

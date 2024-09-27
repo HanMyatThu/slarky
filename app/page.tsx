@@ -3,9 +3,9 @@
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
-import { UserButton } from "@/components/common/user-button";
 import { useGetWorkspaces } from "@/features/workspaces/api/use-get-workspaces";
 import { useCreateWorkSpaceModal } from "@/features/workspaces/store/use-create-workspace-modal";
+import { LoaderIcon } from "lucide-react";
 
 const Home = () => {
   const router = useRouter();
@@ -17,18 +17,20 @@ const Home = () => {
   }, [data]);
 
   useEffect(() => {
-    if (isLoading) return;
-
-    if (workSpaceId) {
-      router.push(`/workspace/${workSpaceId}`);
-    } else if (!open) {
-      setOpen(true);
+    if (!isLoading) {
+      if (workSpaceId) {
+        setOpen(false);
+        router.push(`/workspace/${workSpaceId}`);
+      } else if (!open) {
+        setOpen(true);
+      }
     }
-  }, [isLoading, workSpaceId, open, setOpen, router]);
+  }, [workSpaceId, open, setOpen, router, isLoading]);
 
   return (
-    <div>
-      <UserButton />
+    <div className="flex h-full w-full justify-center items-center mt-auto ml-auto gap-3">
+      <LoaderIcon className="h-8 animate-spin font-medium" />
+      <span className="animate-pulse"> Loading ... </span>
     </div>
   );
 };
